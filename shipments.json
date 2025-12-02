@@ -1,0 +1,9 @@
+{
+  "trackingId": "VWTRK-20251202-4A6B9C",
+  "clientName": "John Doe",
+  "description": "VW Golf brake pads",
+  "estimatedDelivery": "2025-12-10",
+  "statusTimeline": [
+    {"status":"Created","note":"Shipment created","timestamp":"2025-12-02T18:00:00"}
+  ]
+}

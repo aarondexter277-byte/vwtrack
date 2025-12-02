@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VW Track Admin</title>
+<style>
+body{font-family:sans-serif;background:#f4f4f4;margin:0;padding:0}
+.container{max-width:800px;margin:40px auto;padding:20px;background:#fff;border-radius:8px}
+input, textarea, button{padding:10px;font-size:16px;margin:5px;width:100%}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>VW Track — Admin</h1>
+
+<input id="clientName" placeholder="Client Name"/>
+<textarea id="description" placeholder="Item description"></textarea>
+<input id="estimatedDelivery" type="date"/>
+<button id="createBtn">Create Shipment</button>
+
+<p>After creating, manually copy the tracking object into <strong>shipments.json</strong></p>
+
+<div id="newShipment"></div>
+</div>
+
+<script>
+function generateTrackingId(){
+  const d = new Date();
+  const date = d.toISOString().slice(0,10).replace(/-/g,'');
+  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let rnd='';
+  for(let i=0;i<6;i++) rnd += chars[Math.floor(Math.random()*chars.length)];
+  return `VWTRK-${date}-${rnd}`;
+}
+
+document.getElementById('createBtn').addEventListener('click', ()=>{
+  const clientName = document.getElementById('clientName').value.trim();
+  const description = document.getElementById('description').value.trim();
+  const estimatedDelivery = document.getElementById('estimatedDelivery').value;
+  if(!clientName || !description){ alert('Fill all fields'); return; }
+
+  const trackingId = generateTrackingId();
+  const shipment = {
+    trackingId,
+    clientName,
+    description,
+    estimatedDelivery,
+    statusTimeline:[{status:'Created',note:'Shipment created',timestamp:new Date().toISOString()}]
+  };
+  document.getElementById('newShipment').innerText = 'Shipment created:\n' + JSON.stringify(shipment, null, 2);
+  alert('Shipment created. Copy it into shipments.json');
+});
+</script>
+</body>
+</html>

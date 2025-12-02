@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VW Track</title>
+<style>
+body{font-family:sans-serif;background:#f4f4f4;margin:0;padding:0}
+.container{max-width:800px;margin:40px auto;padding:20px;background:#fff;border-radius:8px}
+input, button{padding:10px;font-size:16px;margin:5px}
+.card{padding:15px;border:1px solid #ddd;border-radius:6px;margin-top:10px;background:#fafafa}
+.timeline{list-style:none;padding-left:0}
+.timeline li{padding:8px;border-left:3px solid #ddd;margin-left:12px;padding-left:12px}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>VW Track — Track Your Package</h1>
+<input id="trackingInput" placeholder="Enter tracking ID"/>
+<button id="trackBtn">Track</button>
+
+<div id="result"></div>
+</div>
+
+<script>
+// Load shipments.json
+let shipmentsData = null;
+
+async function loadShipments() {
+  const res = await fetch('shipments.json');
+  shipmentsData = await res.json();
+}
+
+function showShipment(shipment) {
+  const container = document.getElementById('result');
+  let html = `<div class="card"><h3>Tracking ID: ${shipment.trackingId}</h3>`;
+  html += `<p><strong>Client:</strong> ${shipment.clientName}</p>`;
+  html += `<p><strong>Description:</strong> ${shipment.description}</p>`;
+  if(shipment.estimatedDelivery)
+    html += `<p><strong>Estimated Delivery:</strong> ${shipment.estimatedDelivery}</p>`;
+  html += '<h4>Timeline</h4><ul class="timeline">';
+  shipment.statusTimeline.forEach(s=>{
+    html += `<li><strong>${s.status}</strong> - ${s.note} <br><small>${s.timestamp}</small></li>`;
+  });
+  html += '</ul></div>';
+  container.innerHTML = html;
+}
+
+document.getElementById('trackBtn').addEventListener('click', ()=>{
+  const id = document.getElementById('trackingInput').value.trim();
+  if(!id){ alert('Enter a tracking ID'); return; }
+  if(!shipmentsData) { alert('Shipments data not loaded'); return; }
+  const shipment = shipmentsData.shipments.find(s=>s.trackingId===id);
+  if(!shipment){ alert('Shipment not found'); return; }
+  showShipment(shipment);
+});
+
+// Load JSON on page start
+loadShipments();
+</script>
+</body>
+</html>
